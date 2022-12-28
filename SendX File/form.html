@@ -1,0 +1,45 @@
+<html>
+<head>
+	<title>SandX Assignment</title>
+</head>
+<body>
+	<form action="/" method="POST" onsubmit="return downloadFile()">
+		<label for="url">Enter the URL of the file to download:</label><br>
+		<input type="text" id="url" name="url" placeholder="Enter URL"><br>
+		<input type="submit" value="Submit">
+	</form>
+
+    <script>
+		function downloadFile() {
+			// Get the URL from the form
+			var url = document.getElementById("url").value;
+			if (url == "") {
+				alert("URL field is required!");
+				return;
+			}
+
+			// Create an XMLHttpRequest object to send the request
+			var xhr = new XMLHttpRequest();
+			xhr.onreadystatechange = function() {
+				displayFileSource(xhr);
+			};
+			xhr.open("POST", "/", true);
+			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+			// Send the request
+			xhr.send("url=" + encodeURIComponent(url));
+		}
+
+		function displayFileSource(xhr) {
+			if (xhr.readyState == XMLHttpRequest.DONE) {
+				var fileSource = xhr.getResponseHeader("X-File-Source");
+				if (fileSource == "cache") {
+					alert("File downloaded from cache");
+				} else if (fileSource == "url") {
+					alert("File downloaded from URL: " + document.getElementById("url").value);
+				}
+			}
+		}
+	</script>
+</body>
+</html>
